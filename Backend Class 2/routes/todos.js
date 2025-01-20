@@ -1,5 +1,6 @@
-import { createTodo } from "../controllers/createTodo.js";
+
 import express from 'express';
+import createTodo  from "../controllers/createTodo.js";
 
 // Creating an instance of express Router
 const router = express.Router();

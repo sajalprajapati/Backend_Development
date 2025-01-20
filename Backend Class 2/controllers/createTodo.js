@@ -1,7 +1,7 @@
-import Todo from "../models/Todo";
+import Todo from "../models/Todo.js";
 
 //define route handler....
-exports.createTodo=async(req,res)=>
+const createTodo=async(req,res)=>
 {
  try
  {
@@ -31,3 +31,5 @@ exports.createTodo=async(req,res)=>
 })
  }
 }
+
+export default createTodo;

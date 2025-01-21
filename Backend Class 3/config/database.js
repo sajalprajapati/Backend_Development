@@ -6,7 +6,7 @@ dotenv.config();
 const dbConnect=async() =>
 {
     await mongoose.connect(process.env.DATABASE_URL)
-    .then(()=>{console.log("Please successful ho ja")})
+    .then(()=>{console.log("DB connection successful ho gya!")})
     .catch((error)=>
          { 
           console.log("Bhai DB main Error A gya hai");

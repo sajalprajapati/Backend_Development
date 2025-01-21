@@ -1,10 +1,10 @@
 import Todo from "../models/Todo.js"
-const createTodo=async(req,res)=>
+export const createTodo=async(req,res)=>
 {
     try
     {
       const {title,description}=req.body;
-      const response=await Todo.create({title,description});
+      const response=await Todo.create({title,description});//this is the first step CRUD---creation 
       res.status(200).json({
         success:true,
         data:response,
@@ -24,4 +24,3 @@ const createTodo=async(req,res)=>
     }
 }
 
-export default createTodo;

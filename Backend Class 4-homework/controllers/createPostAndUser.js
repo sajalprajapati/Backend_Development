@@ -1,5 +1,7 @@
-import BLOG from '../models/Blog.js';
-import USER from '../models/User.js';
+import BLOG from "../models/Blog.js";
+import USER from "../models/User.js";
+
+
 
 export const createPost = async (req, res) => {
     try {

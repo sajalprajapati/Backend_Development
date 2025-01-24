@@ -12,10 +12,14 @@ app.use(express.json());
 app.use('/api/v2',blog);
 
 
+
+
 app.listen(port,()=>{
     // dbConnect();
     console.log(`Server is running at the port number ${port}`);
 })
+
+
 
 app.get('/',(req,res)=>{
     res.send(`<h1>Welcome to Home Page Baby!</h1>`)

@@ -1,9 +1,20 @@
 import express from 'express'
 import { configDotenv } from 'dotenv'
+import dbConnect from './config/database.js';
+import blog from './routes/blog.js'
 configDotenv();
 const app=express();
-app.listen(3000,()=>{
-    console.log("App is running successfully");
+const port=process.env.PORT||5001;
+
+//using middleware:
+app.use(express.json());
+//mounting 
+app.use('/api/v2',blog);
+
+
+app.listen(port,()=>{
+    // dbConnect();
+    console.log(`Server is running at the port number ${port}`);
 })
 
 app.get('/',(req,res)=>{

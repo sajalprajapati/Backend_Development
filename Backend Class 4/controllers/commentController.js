@@ -15,16 +15,20 @@ export const  createComment=async(req,res)=>
      const savedComment=await comment.save();
 
      //find the post by ID and add the new comment to its comments array:
-     const updatedPost=await Post.findByIdAndUpdate(post,{$push:{comments:savedComment._id}},{new:true}).populate("comments");
+     const updatedPost=await Post.findByIdAndUpdate(post,{$push:{comments:savedComment._id}},{new:true}).populate("comments").exec();
+     
+     
      res.status(200).json(
         {
-            success:true,
-
+            post:updatedPost,
         }
      )
     }
     catch(error)
     {
-
+       return res.status(500).json({
+        message:"Error in comment Controller"
+       })
     }
 }
+

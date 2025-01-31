@@ -16,3 +16,6 @@ app.listen(4001,()=>{
 
 
 
+app.get('/',(req,res)=>{
+    `<div><h1>Hello Baby ! Home Page is here! </h1></div>`
+})

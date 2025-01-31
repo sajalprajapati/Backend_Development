@@ -1,0 +1,18 @@
+import express from 'express'
+import dbConnect from './config/database.js';
+import router from './routes/user.js';
+const app=express();
+
+//route import and mount.
+app.use(express.json());
+app.use("/api/v1",router);
+
+
+
+app.listen(4001,()=>{
+    dbConnect();
+    console.log(`Server is running at the port number ${4001}`)}
+);
+
+
+

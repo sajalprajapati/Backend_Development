@@ -1,6 +1,9 @@
 // import USER from "../models/User.js";
 import bcrypt from 'bcrypt';
 import USER from "../models/User.js";
+import jwt from 'jsonwebtoken';
+import { configDotenv } from "dotenv";
+configDotenv();
 
 
 export const signup=async(req,res)=>
@@ -90,10 +93,85 @@ export const signup=async(req,res)=>
 
 
 
-
+//setting up the JWT and cookies here....
 export const login =async(req,res)=>
 {
-  
+  try
+  {
+    const {email,password}=req.body;
+
+    if(!email || !password)
+    {
+        return res.status(400).json({
+            success:false,
+            message:"Either email or password is empty!"
+        })
+    }
+
+
+
+    let  existingUser=await USER.findOne({email});
+
+    if(!existingUser)
+    {
+        return res.status(400).json({
+            success:false,
+            message:"User not exists! Please sign up first......."
+        })
+    }
+
+
+    const payload={email:existingUser.email,id:existingUser._id,role:existingUser.role}; //payload mean data to be sent okay.....
+   //verifying password and 
+   if(await bcrypt.compare(password,existingUser.password))
+   {
+      //1.....generate jwt token....
+      let token= jwt.sign(payload,process.env.JWT_SECRET,{ expiresIn:"2h"});
+      //2....ab token ko cookie ke sath bhejenge....
+      existingUser = existingUser.toObject(); // Convert Mongoose document to plain object
+      existingUser.token = token; // Now we can add a temporary token field
+      existingUser.password = undefined; // Remove password from the response
+
+      //3...creating a cookie...
+      
+      res.status(200) // Set status first for better readability
+     .cookie("Sajal_Cookie", token, 
+        {
+         httpOnly: true,   // Prevents access from JavaScript (XSS protection)
+         secure: true,     // Ensures cookie is only sent over HTTPS
+         sameSite: "Strict", // Prevents CSRF attacks (use "Lax" if needed for third-party logins)
+         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Cookie expires in 7 days
+         path: "/", // Makes cookie available for the entire site
+        }
+           )
+     .json({
+        success: true,
+        token, // You may omit this if you only use the cookie for authentication
+        user: existingUser, // Renamed for better readability
+        message: "Logged in Successfully",
+         });
+
+   }
+
+   else
+   {
+    //password mathc nhi hue...
+    return res.status(403).json({
+        success:false,
+        message:"Password Don't match!!!!!!!"
+    })
+   }
+
+  }
+
+  catch(error)
+  {
+    console.log(error)
+    return res.status(500).json({
+        success:false,
+        message:"Error in log in page..."
+    })
+  }
 }
 
 

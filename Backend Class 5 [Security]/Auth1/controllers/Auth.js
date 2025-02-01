@@ -126,7 +126,7 @@ export const login =async(req,res)=>
    if(await bcrypt.compare(password,existingUser.password))
    {
       //1.....generate jwt token....
-      let token= jwt.sign(payload,process.env.JWT_SECRET,{ expiresIn:"2h"});
+      let token= jwt.sign(payload,process.env.JWT_SECRET,{ expiresIn:"31d"});
       //2....ab token ko cookie ke sath bhejenge....
       existingUser = existingUser.toObject(); // Convert Mongoose document to plain object
       existingUser.token = token; // Now we can add a temporary token field
@@ -135,7 +135,7 @@ export const login =async(req,res)=>
       //3...creating a cookie...
       
       res.status(200) // Set status first for better readability
-     .cookie("Sajal_Cookie", token, 
+     .cookie("jwt", token, 
         {
          httpOnly: true,   // Prevents access from JavaScript (XSS protection)
          secure: true,     // Ensures cookie is only sent over HTTPS

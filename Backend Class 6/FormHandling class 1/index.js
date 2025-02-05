@@ -21,7 +21,10 @@ const port=process.env.PORT || 3000;
 app.use(express.json());
 
 //handling file-uploading  with middleware....
-app.use(fileUpload()); //this will upload the server 
+app.use(fileUpload({
+    useTempFiles:true,
+    tempFileDir:'/tmp/'
+})); //this will upload the server 
 
 
 //handling media server initiation...

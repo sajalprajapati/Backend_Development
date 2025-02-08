@@ -66,10 +66,16 @@ async function uploadFiletoCloudinary(file,folder,filename)
     It would not directly upload the photo into that folder rather, we have to tell within an creation of an variable Options.
     */
     // const options={folder}
+    const options={folder};
+    options.resource_type="auto";
+
     return await cloudinary.uploader.upload(file.tempFilePath,{folder,public_id:filename,
         unique_filename:false
     });
 }
+
+
+
 
 //image upload ka handler....
 export const imageUpload=async(req,res)=>
@@ -106,6 +112,172 @@ export const imageUpload=async(req,res)=>
 
      //Step #: File format supported hai....
     //  console.log("Uploading to codehelp cloudinary ...")
+     const response=await uploadFiletoCloudinary(file,"CodeHelp",fileName);
+    //  console.log(response);
+
+
+
+     //Step $: Database creation....
+     const fileData=await File.create({
+        name,tags,email,imageUrl:response.secure_url
+     })
+
+
+    res.status(201).json({
+        success:true,
+        imageUrl:response.secure_url,
+        message:"Image Successfully Uploaded"
+    })
+
+
+    }
+
+    catch(error)
+    {
+        res.status(401).json({
+            success:false,
+            message:"Image  UnSuccessfully ",
+            error:error.message
+        })
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const MAX_FILE_SIZE=5*1024*1024;
+
+//video upload ka handler....
+export const videoUpload=async(req,res)=>
+{
+    try
+    {
+       //Ste p1 : 
+     const {name,tags,email}=req.body;
+    //  console.log(name,tags,email);
+
+     const file=req.files.videoFile;
+     console.log(file);
+
+
+     if(file.size>MAX_FILE_SIZE)
+     {
+        return res.status(400).json({
+            message: "File size exceeds the 5MB limit",
+            success: false
+        });
+     }
+
+     supportedTypes = ["mp4","mov"];
+
+     const fileType=`${file.name.split('.').pop().toLowerCase()}` //<----this will provide me the filetype...
+     const fileName=`${file.name}`;
+     console.log(fileType);
+
+
+
+     if(!isFileTypeSupported(fileType,supportedTypes))
+        {
+           return res.status(401).json({
+               message:"File Type Not Supported",
+               success:false
+           })
+        }
+   
+
+        // console.log("Uploading to codehelp cloudinary ...")
+        const response=await uploadFiletoCloudinary(file,"CodeHelp",fileName);
+        console.log(response);
+   
+   
+   
+        //Step $: Database creation....
+        const fileData=await File.create({
+           name,tags,email,imageUrl:response.secure_url
+        })
+   
+   
+       res.status(201).json({
+           success:true,
+           imageUrl:response.secure_url,
+           message:"Video Successfully Uploaded"
+       })
+   
+     
+    }
+
+    catch(error)
+    {
+        res.status(400).json({
+            success:false,
+            message:"Video UnSuccessfully ",
+            error:error.message
+        })
+    }
+}
+
+
+
+
+const MAX_IMAGE_SIZE=7*1024*1024;
+
+
+
+export const imageSizeReducer=async(req,res)=>
+{
+    try
+    {
+     //Ste p1 : 
+     const {name,tags,email}=req.body;
+     console.log(name,tags,email);
+
+
+     const file=req.files.imageFile;
+     console.log(file);
+
+
+     if(file.size>MAX_IMAGE_SIZE)
+     {
+        return res.status(400).json({
+            message: "File size exceeds the 5MB limit",
+            success: false
+        });
+     }
+
+     //Step p2: Validation:
+     supportedTypes = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "heif", "heic", "svg", "eps", "ai", "raw", "psd", "ico"];
+
+     const fileType=`${file.name.split('.').pop().toLowerCase()}` //<----this will provide me the filetype...
+     const fileName=`${file.name}`;
+     console.log(fileType);
+
+
+
+      
+     if(!isFileTypeSupported(fileType,supportedTypes))
+     {
+        return res.status(401).json({
+            message:"File Type Not Supported",
+            success:false
+        })
+     }
+
+
+     //Step #: File format supported hai....
+    //  console.log("Uploading to codehelp cloudinary ...")
+
+    //compress karke upload karna hai..
+
+
+    //change the quality or height and width of image..
      const response=await uploadFiletoCloudinary(file,"CodeHelp",fileName);
     //  console.log(response);
 
